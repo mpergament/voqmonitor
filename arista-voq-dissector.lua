@@ -11,12 +11,41 @@ local etypetable = DissectorTable.get("ethertype")
 
 -- Create a map from integer values to strings
 local integer_to_string_map = {
+    [64] = " inPortNotVlanMember (VOQID 64)",
+    [65] = " inSaEqualsDa (VOQID 65)",
+    [66] = " inSaMulticast (VOQID 66)",
+    [67] = " inRpf (VOQID 67)",
+    [68] = " inIpVersionError (VOQID 68)",
+    [69] = " inIpv4ChecksumError (VOQID 69)",
+    [70] = " inIpTtl0 (VOQID 70)",
+    [71] = " inIpv6UnspecifiedDestination (VOQID 71)",
+    [72] = " inIpv6MulticastSource (VOQID 72)",
+    [73] = " inNoArp (VOQID 73)",
     [74] = " inNullRoute (VOQID 74)",
+    [75] = " inArpCapacity (VOQID 75)",
+    [76] = " inPbr (VOQID 76)",
+    [77] = " outMtuTunnel (VOQID 77)",
+    [78] = " inTunVxlan (VOQID 78)",
+    [79] = " inElkError (VOQID 79)",
+    [80] = " inSaNotFound (VOQID 80)",
+    [81] = " inForwardingLookupMiss (VOQID 81)",
+    [82] = " inNoForwardingAction (VOQID 82)",
+    [83] = " inIntfMplsDisabled (VOQID 83)",
+    [84] = " inSourcePortFilter (VOQID 84)",
+    [85] = " inEtreeLeaf (VOQID 85)",
+    [86] = " inEncapBumFilter (VOQID 86)",
+    [87] = " inVplsStandbyPw (VOQID 87)",
+    [88] = " inPtp (VOQID 88)",
+    [89] = " inMcastEmptyMcid (VOQID 89)",
+    [90] = " inAcl (VOQID 90)",
+    [91] = " inMcastNoCpu (VOQID 91)",
+    [92] = " inLagDiscarding (VOQID 92)",
+    [93] = " inOam (VOQID 93)",
 }
 
 -- Function to get a string representation from an integer value
 function get_string_from_integer(value)
-    return integer_to_string_map[value] or "Unknown"
+    return integer_to_string_map[value] or "Unknown VOQID: " .. tostring(value)
 end
 
 -- Dissector for the Arista EtherType
@@ -36,8 +65,6 @@ function arista_voq.dissector(buf, packet, tree)
    Dissector.get("ethertype"):call(buf:range(pos):tvb(),packet,tree)
   end
 
---   -- Set the protocol name in the Wireshark GUI
---   pinfo.cols.protocol = arista_voq.name
   local subtree = tree:add(arista_voq, buf(offset,32), "Arista VoQ Monitor")
   local voq_value = buf(offset+24, 1):uint()
   subtree:add(f_voq, get_string_from_integer(voq_value))
