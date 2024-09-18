@@ -53,7 +53,7 @@ function arista_voq.dissector(buf, packet, tree)
   -- look at subtype
   local offset = buf:len() - 32
   local pos=0
-  -- check if it is a timestamp
+
   local next_type = buf(offset,2):uint()
   -- Get the dissector for that type
   local d = etypetable:get_dissector(next_type)
